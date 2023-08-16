@@ -121,7 +121,7 @@ request_streampulse_results <- function(sites) {
   return(site_dataframes)
 }
 
-
+#Pass list of sites and folder name to download csv files from streampulse data
 streampulse_data_pipeline <- function(site_list, raw_data_dest){
   site_list <- site_list
   raw_data_dest <- raw_data_dest
