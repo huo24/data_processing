@@ -122,7 +122,6 @@ request_streampulse_results <- function(sites) {
 }
 
 
-
 streampulse_data_pipeline <- function(site_list, raw_data_dest){
   site_list <- site_list
   raw_data_dest <- raw_data_dest
