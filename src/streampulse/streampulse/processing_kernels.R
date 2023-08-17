@@ -140,6 +140,8 @@ process_0_VERSIONLESS002 <- function(network, domain, prodname_ms, site_code, co
   
   res <- httr::HEAD(url)
   
+  
+  
   last_mod_dt <- strptime(x = substr(res$headers$`last-modified`,
                                      start = 1,
                                      stop = 19),
@@ -162,20 +164,38 @@ process_0_VERSIONLESS002 <- function(network, domain, prodname_ms, site_code, co
 #. handle_errors
 process_1_VERSIONLESS001 <- function(network, domain, prodname_ms, site_code, component) {
 
-
-    rawfile <- glue('data/{n}/{d}/raw/{p}/{s}/{c}.csv',
-                    n = network,
-                    d = domain,
-                    p = prodname_ms,
-                    s = site_code,
-                    c = component)
+    prodname_ms <- "discharge__VERSIONLESS001"
     
-    d <- read.delim(rawfile, sep = ',') %>%
-         mutate(site_name = 'allequash_creek') %>%
-         as_tibble()
+
+    #rawfile <- glue('data/{n}/{d}/raw/{p}/{s}/{c}.csv',
+    #                n = network,
+    #                d = domain,
+    #                p = prodname_ms,
+    #                s = site_code,
+    #                c = component)
+    
+    rawfolder <- glue('data/{n}/{d}/raw/{p}/{s}',
+                      n = network,
+                      d = domain,
+                      p = prodname_ms,
+                      s = site_code)     
+    
+    
+    
+    all_files <- list.files(path = rawfolder, pattern = "*.csv", full.names = TRUE)
+    
+    
+    list_of_dataframes <- map(all_files, ~read_delim(.x, delim = ','))
+    
+    
+    d <- map(all_files, ~read_delim(.x, delim = ',') %>% as_tibble())
 
     d$'X_00060_00003'<-28.3168*(d$'X_00060_00003')
-
+    
+    
+    
+    #combine sites before this func
+    
     d <- ms_read_raw_csv(preprocessed_tibble = d,
                     datetime_cols = list('Date' = '%Y-%m-%d'),
                     datetime_tz = 'US/Central',
@@ -207,17 +227,29 @@ process_1_VERSIONLESS001 <- function(network, domain, prodname_ms, site_code, co
 #stream_chemistry: STATUS=READY
 #. handle_errors
 process_1_VERSIONLESS002 <- function(network, domain, prodname_ms, site_code, component) {
-
-  rawfile <- glue('data/{n}/{d}/raw/{p}/{s}/{c}.csv',
-                  n = network,
-                  d = domain,
-                  p = prodname_ms,
-                  s = site_code,
-                  c = component)
   
-  d <- read.delim(rawfile, sep = ',') %>%
-    mutate(site_name = 'north_creek') %>%
-    as_tibble()
+  
+  #rawfile <- glue('data/{n}/{d}/raw/{p}/{s}/{c}.csv',
+   #               n = network,
+    #              d = domain,
+     #             p = prodname_ms,
+      #            s = site_code,
+       #           c = component)
+  
+  prodname_ms <- "stream_chemistry__VERSIONLESSS002"
+  rawfolder <- glue('data/{n}/{d}/raw/{p}/{s}',
+                    n = network,
+                    d = domain,
+                    p = prodname_ms,
+                    s = site_code)     
+  
+  all_files <- list.files(path = rawfolder, pattern = "*.csv", full.names = TRUE)
+  
+  
+  list_of_dataframes <- map(all_files, ~read_delim(.x, delim = ','))
+  
+  
+  d <- map(all_files, ~read_delim(.x, delim = ',') %>% as_tibble())
 
   d$'X_00060_00003'<-28.3168*(d$'X_00060_00003')
   
